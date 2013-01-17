@@ -1,10 +1,9 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H 
-template <typename data>
 class Mean{
     public:
         Mean():my_mean(0), counter(0){};
-        double operator()(data value){
+        double operator()(double value){
             my_mean = (value + counter * my_mean) / (counter + 1);
             ++counter;
             return my_mean;
@@ -15,11 +14,10 @@ class Mean{
         unsigned counter;
 };
 
-template <typename data>
-class StDeviation{
+class StandardDeviation{
     public:
-        StDeviation():my_mean(0), deviation(0), counter(0){};
-        double operator()(data value){
+        StandardDeviation():my_mean(0), deviation(0), counter(0){};
+        double operator()(double value){
             my_mean = (value + counter * my_mean) / (counter + 1);
             deviation += (counter * pow(value - my_mean, 2)) / (counter + 1);
             ++counter;
