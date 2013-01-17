@@ -1,4 +1,5 @@
 #include "../histogram.h"
+#include "../statistics.h"
 
 TEST(histogram, constructor_values){
     std::vector<double> values;
@@ -62,6 +63,22 @@ TEST(histogram, sum){
     values.push_back(4);
     Histogram histogram(4, values);
     EXPECT_EQ(histogram.SumBins(), 4);
+}
+
+TEST(statistics, Mean_and_std){
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<> d(5, 2);
+    Mean<double> mean;
+    StDeviation<double> std;
+    for (size_t i = 0; i < 10000; ++i)
+    {
+        double value = d(gen);
+        mean(value);
+        std(value);
+    }
+    EXPECT_NEAR(mean, 5, 0.1);
+    EXPECT_NEAR(std, 2, 0.1);
 }
 
 /*
