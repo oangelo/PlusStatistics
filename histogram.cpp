@@ -1,102 +1,67 @@
- 
 #include "histogram.h"
 
-histogram::histogram(unsigned bins,const std::vector<double> & values){
-  __epslon=0.0000000001;
-  __n_bins=bins;
-  __values=values;
-  __max=__values[0];
-  __min=__values[0];
-  for(unsigned i=1;i<__values.size();i++){
-    if(__min>__values[i])
-      __min=__values[i];
-    if(__max<__values[i])
-      __max=__values[i];
-  }
-  __max+=__epslon;
-  fill_histogram();
-}
-histogram::histogram(unsigned bins,double min,double max,const std::vector<double> & values){
-  __epslon=0.0000000001;
-  __n_bins=bins;
-  __values=values;
-  __max=max;
-  __min=min;
-  fill_histogram();
-}
 
-
-void histogram::fill_histogram(){
-  std::vector<double> aux(3);
-  
-  //preparing de __histogram
-  double length;
-  length = __max-__min;
-  for(unsigned i=0;i<__n_bins;i++){
-    aux[0]=__min+i*(length/__n_bins);
-    aux[1]=__min+(i+1)*(length/__n_bins);
-    aux[2]=0;
-    __histogram.push_back(aux); 
-  }
-  
-  //feeding
-  unsigned position;
-  for(unsigned i=0;i<__values.size();i++){
-    position = (__values[i]-__min)*(((double)__n_bins)/length);
-    //std::cout << position << std::endl; 
-    __histogram[position][2]++;
-  } 
-}
-
-unsigned histogram::n_occupied_bins(){
-  unsigned cont=0;
-  for(unsigned i=0;i<__histogram.size();i++){
-    if(__histogram[i][2]>0){
-      cont++;
+std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
+    for (size_t i = 0; i < histogram.range.size(); ++i)
+    {
+        os << histogram.range[i].first << "\t" << histogram.range[i].second << "\t" << histogram.amount[i] << std::endl;
     }
-  }
-  return(cont);
+    return os;
+} 
+
+//adding a small value to max, so the max value from values can be present at
+//the histogram
+Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
+:amount(), range(), max(*std::max_element(values.begin(), values.end()) + 0.00000001), 
+    min(*std::min_element(values.begin(), values.end())), bins_amount(bins_amount)
+{
+    StartHistogram();
+    for(auto& item: values){
+        operator()(item);
+    }
+
 }
 
-void histogram::print(){
-  for(unsigned i=0;i<__n_bins;i++)
-    std::cout << __histogram[i][0] <<"\t"<<__histogram[i][1] <<"\t"<<__histogram[i][2]<< std::endl;
+Histogram::Histogram(unsigned bins_amount, double min, double max)
+:amount(), range(), max(max), min(min), bins_amount(bins_amount)
+{
+    StartHistogram();
 }
 
-void histogram::print(std::string file_name){
-  std::ofstream data;
-  data.open(file_name.c_str());
-  double length;
-  length = __max-__min;
-  for(unsigned i=0;i<__n_bins;i++)
-    data << (__histogram[i][1]+__histogram[i][0])/2  <<"\t"<<__histogram[i][2]/__values.size()<<"\t"<<(length/__n_bins)<< std::endl;
-  data.close();
+void Histogram::StartHistogram(){
+    double length = (max - min) / bins_amount;
+    for(unsigned i = 0; i < bins_amount; i++) {
+        std::pair<double, double> bin(min + i * length, min + (i + 1) * length);
+        range.push_back(bin); 
+        amount.push_back(0); 
+    }
 }
 
-void histogram::print(std::string file_name,std::string folder){
-struct stat st;   
-  if(!(stat(folder.c_str(),&st) == 0)){
-    std::stringstream ss; 
-    ss << "mkdir " << folder;
-    system(std::string(ss.str()).c_str());
-  }
-  std::stringstream ss; 
-  ss << folder << "/" << file_name;
-  std::ofstream data;
-  data.open(std::string(ss.str()).c_str());
-  double length = __max-__min;
-  for(unsigned i=0;i<__n_bins;i++)
-    data << (__histogram[i][1]+__histogram[i][0])/2  <<"\t"<<__histogram[i][2]/__values.size()<<"\t"<<(length/__n_bins)<< std::endl;  
-  data.close();
-  
- 
-  
+unsigned Histogram::get_bins_amount() const {
+    return range.size();
 }
 
-double histogram::operator[](unsigned index) const{
-    return (double(__histogram[index][2]) / __values.size());
+double Histogram::get_max() const {
+    return max;
 }
 
-unsigned histogram::Size() const{
-    return __histogram.size();
+double Histogram::get_min() const {
+    return min;
+}
+
+unsigned Histogram::SumBins() {
+    return std::accumulate(amount.begin(), amount.end(), 0);
+}
+
+unsigned Histogram::operator[](unsigned index) const {
+    return amount[index];
+}
+
+void Histogram::operator()(double value) {
+    for (size_t i = 0; i < range.size(); ++i) {
+        if( range[i].first <= value && range[i].second > value) {
+            ++amount[i];
+            return;
+        }
+    }
 }
