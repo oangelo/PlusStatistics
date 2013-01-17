@@ -2,9 +2,10 @@
 
 
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
+    os << "# bin_value \t bin_min \t bin_max" <<  std::endl;
     for (size_t i = 0; i < histogram.range.size(); ++i)
     {
-        os << histogram.range[i].first << "\t" << histogram.range[i].second << "\t" << histogram.amount[i] << std::endl;
+        os << histogram.amount[i] << "\t" << histogram.range[i].first << "\t" << histogram.range[i].second <<  std::endl;
     }
     return os;
 } 
