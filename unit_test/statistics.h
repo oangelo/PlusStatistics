@@ -81,3 +81,21 @@ TEST(statistics, Mean_and_std){
     EXPECT_NEAR(std, 2, 0.1);
 }
 
+TEST(histogram, random){
+    std::vector<double> values;
+    Histogram probs(2, 0, 2);
+    probs(0.5);
+    probs(0.5);
+    probs(0.5);
+    probs(1.5);
+    probs(1.5);
+    Histogram histogram(2, 0, 1.2);
+    for (size_t i = 0; i < 10000; ++i)
+    {
+        size_t value = RandomGenerator(probs);
+    //    std::cout << value << std::endl;
+        histogram(value);
+    }
+    EXPECT_NEAR(histogram[0] / 10000.0, probs[0] / static_cast<double>(probs.SumBins()), 0.02);
+    EXPECT_NEAR(histogram[1] / 10000.0, probs[1] / static_cast<double>(probs.SumBins()), 0.02);
+}

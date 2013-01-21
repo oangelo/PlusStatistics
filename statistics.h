@@ -2,6 +2,8 @@
 #define STATISTICS_H 
 
 #include <cmath>
+#include <random>
+#include "histogram.h"  
 
 class Mean{
     public:
@@ -22,5 +24,8 @@ class StandardDeviation{
         double my_mean, deviation;
         unsigned counter;
 };
+
+
+size_t RandomGenerator(Histogram histogram);
 
 #endif /* STATISTICS_H */
