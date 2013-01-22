@@ -29,6 +29,8 @@ public:
     double get_max() const;
     double get_min() const;
 
+    void set_bin_value(size_t index, unsigned value);
+
     friend std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
     
 protected:
@@ -44,3 +46,4 @@ protected:
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
 
 #endif //HISTOGRAM
+

@@ -1,6 +1,7 @@
 #include "histogram.h"
 
 
+
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
     os << "#midle_bin_value \t bin_amount \t bin_length" <<  std::endl;
     for (size_t i = 0; i < histogram.range.size(); ++i)
@@ -23,6 +24,11 @@ Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
         operator()(item);
     }
 
+}
+
+
+void Histogram::set_bin_value(size_t index, unsigned value) {
+    amount[index] = value;
 }
 
 Histogram::Histogram(unsigned bins_amount, double min, double max)
