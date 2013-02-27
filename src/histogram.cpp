@@ -25,9 +25,6 @@ Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
 
 }
 
-void Histogram::set_bin_value(size_t index, unsigned value) {
-    amount[index] = value;
-}
 
 Histogram::Histogram(unsigned bins_amount, double min, double max)
 :amount(), range(), max(max), min(min), bins_amount(bins_amount)
