@@ -1,6 +1,4 @@
 #ignore all, but source code files
-*
-!*.c
-!*.cpp
-!*.h
-!Makefile
+*.o
+pstatistics
+unit_test/tests
