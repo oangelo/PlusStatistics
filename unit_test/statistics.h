@@ -1,5 +1,5 @@
-#include "../histogram.h"
-#include "../statistics.h"
+#include "../src/histogram.h"
+#include "../src/statistics.h"
 
 TEST(histogram, constructor_values){
     std::vector<double> values;
@@ -93,7 +93,6 @@ TEST(histogram, random){
     for (size_t i = 0; i < 10000; ++i)
     {
         size_t value = RandomGenerator(probs);
-    //    std::cout << value << std::endl;
         histogram(value);
     }
     EXPECT_NEAR(histogram[0] / 10000.0, probs[0] / static_cast<double>(probs.SumBins()), 0.02);
