@@ -12,6 +12,7 @@
 #include <map>
 #include <algorithm>
 
+namespace pstatistics{
 
 class Histogram{
 public:
@@ -41,5 +42,7 @@ protected:
 
 
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
+
+} //namespace
 
 #endif //HISTOGRAM

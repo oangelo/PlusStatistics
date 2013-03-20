@@ -1,5 +1,6 @@
 #include "histogram.h"
 
+namespace pstatistics{
 
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
     os << "#midle_bin_value \t bin_amount \t bin_length" <<  std::endl;
@@ -68,4 +69,6 @@ void Histogram::operator()(double value) {
             return;
         }
     }
+}
+
 }

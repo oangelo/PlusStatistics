@@ -1,6 +1,8 @@
 #include "../src/histogram.h"
 #include "../src/statistics.h"
 
+using namespace pstatistics;
+
 TEST(histogram, constructor_values){
     std::vector<double> values;
     values.push_back(1);
@@ -65,20 +67,38 @@ TEST(histogram, sum){
     EXPECT_EQ(histogram.SumBins(), 4);
 }
 
-TEST(statistics, Mean_and_std){
+TEST(statistics, Normal_dist){
     std::random_device rd;
     std::mt19937 gen(rd());
     std::normal_distribution<> d(5, 2);
     Mean mean;
     StandardDeviation std;
+    Skewness skewness;
     for (size_t i = 0; i < 10000; ++i)
     {
         double value = d(gen);
         mean(value);
         std(value);
+        skewness(value);
+        
     }
-    EXPECT_NEAR(mean, 5, 0.1);
-    EXPECT_NEAR(std, 2, 0.1);
+    EXPECT_NEAR(mean, 5., 0.1);
+    EXPECT_NEAR(std, 2., 0.1);
+    EXPECT_NEAR(skewness, 0., 0.1);
+}
+
+TEST(statistics, gamma_distribution){
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::gamma_distribution<> d(3.0, 2.0);
+    Skewness skewness;
+    for (size_t i = 0; i < 10000; ++i)
+    {
+        double value = d(gen);
+        skewness(value);
+        
+    }
+    EXPECT_TRUE(skewness > 0.9);
 }
 
 TEST(histogram, random){
