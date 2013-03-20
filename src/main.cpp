@@ -9,6 +9,9 @@
 #include "histogram.h"
 #include "statistics.h"
 
+
+using namespace pstatistics;
+
 void help(std::string name) {
     std::cout << "usage:" << std::endl;
     std::cout << name << " [options]... [file name]" << std::endl;
@@ -17,6 +20,7 @@ void help(std::string name) {
     std::cout << "  --hist                 print a histogram" << std::endl;
     std::cout << "  --mean                 print the mean" << std::endl;
     std::cout << "  --std                  print the standard deviation" << std::endl;
+    std::cout << "  --skew                 print the skewness" << std::endl;
     std::cout << std::endl;
     std::cout << "options:" << std::endl;
     std::cout << "  -                             reads data from stdin" << std::endl;
@@ -74,15 +78,18 @@ int main(int argc, char** argv) {
             }
         }
         if( strcmp(argv[i], "--mean") == 0) {
-            Mean mean;
-            mean = for_each(data.begin(), data.end(), mean);
+            Mean mean(for_each(data.begin(), data.end(), Mean()));
             std::cout << mean << std::endl;
         }
         if( strcmp(argv[i], "--std") == 0) {
-            StandardDeviation std;
-            std = for_each(data.begin(), data.end(), std);
+            StandardDeviation std(for_each(data.begin(), data.end(), StandardDeviation()));
             std::cout << std << std::endl;
         }
+        if( strcmp(argv[i], "--skew") == 0) {
+            Skewness skewness(for_each(data.begin(), data.end(), Skewness()));
+            std::cout << skewness << std::endl;
+        }
+
     }
     return 0;
 }
