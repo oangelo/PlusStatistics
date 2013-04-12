@@ -18,6 +18,7 @@ void help(std::string name) {
     std::cout << std::endl;
     std::cout << "functions:" << std::endl;
     std::cout << "  --hist                 print a histogram" << std::endl;
+    std::cout << "  --hist_interval <min> <max> print a histogram at the interval" << std::endl;
     std::cout << "  --mean                 print the mean" << std::endl;
     std::cout << "  --std                  print the standard deviation" << std::endl;
     std::cout << "  --skew                 print the skewness" << std::endl;
@@ -77,6 +78,26 @@ int main(int argc, char** argv) {
                 }
             }
         }
+
+        if( strcmp(argv[i], "--hist_interval") == 0) {
+            if(data.size() > 0){
+                double min = atoi(argv[i + 1]);
+                double max = atoi(argv[i + 2]);
+                std::cerr << "# hist_interval: " << max << " " << min << std::endl;
+                if(bins_amount > 0){
+                    Histogram histogram(bins_amount, min, max);
+                    for(auto value: data)
+                        histogram(value);
+                    std::cout << histogram << std::endl;
+                }else{
+                    Histogram histogram(sqrt(data.size()), min, max);
+                    for(auto value: data)
+                        histogram(value);
+                    std::cout << histogram << std::endl;
+                }
+            }
+        }
+
         if( strcmp(argv[i], "--mean") == 0) {
             Mean mean(for_each(data.begin(), data.end(), Mean()));
             std::cout << mean << std::endl;
