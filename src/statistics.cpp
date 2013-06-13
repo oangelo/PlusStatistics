@@ -64,4 +64,16 @@ size_t RandomGenerator(Histogram histogram){
     return counter;
 }
 
+size_t RandomGenerator(std::vector<frequency> data_frequency){
+    std::vector<double> data;
+    for(frequency element: data_frequency){
+        for (size_t i = 0; i < element.second; ++i) {
+            data.push_back(element.first);
+        }
+    }
+    std::uniform_real_distribution<> dist(0, data.size());
+    double random_number = dist(gen);
+    return data[random_number];
+}
+
 }

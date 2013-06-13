@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <random>
+#include <map>
 #include "histogram.h"  
 
 namespace pstatistics{
@@ -40,6 +41,9 @@ class Skewness{
 };
 
 size_t RandomGenerator(Histogram histogram);
+
+typedef std::pair<double,unsigned> frequency; 
+size_t RandomGenerator(std::vector<frequency> data_frequency);
 }
 
 #endif /* STATISTICS_H */
