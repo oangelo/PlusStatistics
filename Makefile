@@ -1,6 +1,6 @@
 cc = g++ 
-CFLAGS=  -std=c++0x  -frounding-math -c -Wall -O3 -march=native #-pg -g
-LDFLAGS=-lCGAL -lCGAL_Core -lgmp -lboost_system -lboost_thread -lstdc++ -lm
+CFLAGS=  -std=c++0x -c -Wall -O3 -march=native #-pg -g
+LDFLAGS=-lstdc++ -lm
 SOURCES = src/histogram.cpp src/statistics.cpp src/main.cpp  src/utils/utils.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
