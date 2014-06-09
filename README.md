@@ -3,6 +3,10 @@ PlusStatistics
 
 Some basic statistical methods
 
+After clone do:
+
+    $ git submodule update --init --recursive
+
 To build and install, just do:
 
     $ make
