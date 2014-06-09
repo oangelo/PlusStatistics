@@ -23,3 +23,9 @@ Or calculate the mean of a file:
 For more options try:
 
     $ pstatistics -h
+
+Headers files are at:
+
+    pstatistics/*
+
+and one should add -lpstatistics to use this as a lib

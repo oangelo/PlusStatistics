@@ -1,4 +1,5 @@
 #ignore all, but source code files
 *.o
+*.so
 pstatistics
 unit_test/tests

@@ -1,19 +1,50 @@
-cc = g++ 
-CFLAGS=  -std=c++0x -c -Wall -O3 -march=native #-pg -g
-LDFLAGS=-lstdc++ -lm
-SOURCES = src/histogram.cpp src/statistics.cpp src/main.cpp  src/utils/utils.cpp
+# Generic Makefile for compiling a simple executable.
 
-OBJECTS = $(SOURCES:.cpp=.o)
-EXECUTABLE=pstatistics 
+CC := g++ 
+SRCDIR := src
+BUILDDIR := build
+CFLAGS := -g -Wall -std=c++0x  -Weffc++ -Wextra -pedantic
+LDFLAGS=  -lm 
+TARGET := pstatistics 
+LIB := libpstatistics.so 
+SRCEXT := cpp
+INCDIR := /usr/include/pstatistics
+LIBDIR := /usr/lib
+BINDIR := /usr/bin
 
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+DIRS = $(shell find $(SRCDIR) -type d)
 
-all: $(SOURCES) $(EXECUTABLE)
+HEADERS := $(shell find $(SRCDIR) -type f -name *.h)
+INCLUDE = $(patsubst $(SRCDIR)/%,$(INCDIR)/%,$(HEADERS))
 
-$(EXECUTABLE): $(OBJECTS)
-	$(CC)  $(OBJECTS) -o $@ $(LDFLAGS) #-pg 
+.PHONY: all 
+all:bin lib
 
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@  
+.PHONY: install 
+vpath %.h $(DIRS)
+install: $(INCLUDE)
+	@cp $(LIB) $(LIBDIR)
+	@cp $(TARGET) $(BINDIR)
+$(INCDIR)/%.h: %.h 
+	@mkdir -p  $(shell dirname $@)
+	@cp $< $@
+ 
+.PHONY: lib 
+lib:$(LIB)
+$(LIB):$(OBJECTS)
+	$(CC)  -shared -Wl,-soname,$(LIB) -o $(LIB) $? 
+vpath %.$(SRCEXT) $(DIRS)
+$(BUILDDIR)/%.o: %.$(SRCEXT) 
+	@mkdir -p  $(shell dirname $@)
+	$(CC) $(CFLAGS) $< -o $@  -c -fPIC
 
-install:
-	cp $(EXECUTABLE) /usr/local/bin
+.PHONY: bin 
+bin:$(TARGET)
+$(TARGET):$(LIB)
+	$(CC) -L. -lpstatistics -o $(TARGET)
+
+.PHONY: clean
+clean:
+	@echo " Cleaning..."; $(RM) -r $(BUILDDIR) $(TARGET) $(LIB)
