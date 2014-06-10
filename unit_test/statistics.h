@@ -1,5 +1,5 @@
-#include "../src/histogram.h"
-#include "../src/statistics.h"
+#include "pstatistics/histogram.h"
+#include "pstatistics/statistics.h"
 
 using namespace pstatistics;
 

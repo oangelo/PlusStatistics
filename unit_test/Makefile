@@ -3,8 +3,8 @@
 
 CC=g++
 CFLAGS=-c -Wall -Weffc++ -pedantic -std=c++0x  
-LDFLAGS= -lgtest -lgsl -lgslcblas -lm -lpthread
-SOURCES=   main.cpp ../src/histogram.cpp ../src/statistics.cpp
+LDFLAGS= -lgtest -lgsl -lgslcblas -lm -lpthread -lpstatistics
+SOURCES=   main.cpp 
  
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=tests
