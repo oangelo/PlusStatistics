@@ -46,34 +46,3 @@ namespace pstatistics{
     Skewness::operator double() const{
         return g1;
     }
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    size_t RandomGenerator(Histogram histogram){
-        double histogram_sum = histogram.SumBins();
-        std::uniform_real_distribution<> dist(0, histogram_sum);
-        double random_number = dist(gen);
-        double sum = 0;
-        unsigned counter = 0;
-        sum = histogram[0];
-        while(counter < histogram.get_bins_amount() && random_number > sum) {
-            ++counter;
-            sum += histogram[counter];
-        }
-        return counter;
-    }
-
-    size_t RandomGenerator(std::vector<frequency> data_frequency){
-        std::vector<double> data;
-        for(frequency element: data_frequency){
-            for (size_t i = 0; i < element.second; ++i) {
-                data.push_back(element.first);
-            }
-        }
-        std::uniform_real_distribution<> dist(0, data.size());
-        double random_number = dist(gen);
-        return data[random_number];
-    }
-
-}

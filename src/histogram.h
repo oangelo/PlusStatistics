@@ -40,7 +40,6 @@ protected:
     void StartHistogram();
 };
 
-
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
 
 } //namespace

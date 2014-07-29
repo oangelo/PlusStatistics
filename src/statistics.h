@@ -1,8 +1,9 @@
 #ifndef STATISTICS_H
 #define STATISTICS_H 
 
-#include <cmath>
+#include <functional>
 #include <random>
+#include <cmath>
 #include <map>
 
 #include "histogram.h"  
@@ -10,7 +11,7 @@
 
 namespace pstatistics{
 
-    class Mean{
+    class Mean : public std::binary_function<double, double, double>{
         public:
             Mean();
             double operator()(double value);
@@ -20,7 +21,7 @@ namespace pstatistics{
             unsigned counter;
     };
 
-    class StandardDeviation{
+    class StandardDeviation : public std::binary_function<double, double, double>{
         public:
             StandardDeviation();
             double operator()(double value);
@@ -31,7 +32,7 @@ namespace pstatistics{
     };
 
     /*http://en.wikipedia.org/wiki/Skewness*/
-    class Skewness{
+    class Skewness : public std::binary_function<double, double, double>{
         public:
             Skewness();
             double operator()(double value);
@@ -41,10 +42,6 @@ namespace pstatistics{
             Mean mean;
             double g1;
     };
-
-    typedef std::pair<double,unsigned> frequency; 
-    size_t RandomGenerator(std::vector<frequency> data_frequency);
-    size_t RandomGenerator(Histogram histogram);
 }
 
 #endif /* STATISTICS_H */

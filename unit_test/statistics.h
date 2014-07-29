@@ -68,40 +68,6 @@ TEST(histogram, sum){
 }
 
 
-
-TEST(histogram, gen_random){
-    std::vector<double> values;
-    Histogram probs(2, 0, 2);
-    probs(0.5);
-    probs(0.5);
-    probs(0.5);
-    probs(1.5);
-    probs(1.5);
-    Histogram histogram(2, 0, 1.2);
-    for (size_t i = 0; i < 10000; ++i)
-    {
-        size_t value = RandomGenerator(probs);
-        histogram(value);
-    }
-    EXPECT_NEAR(histogram[0] / 10000.0, probs[0] / static_cast<double>(probs.SumBins()), 0.02);
-    EXPECT_NEAR(histogram[1] / 10000.0, probs[1] / static_cast<double>(probs.SumBins()), 0.02);
-}
-
-
-TEST(histogram, gen_random_frequencies){
-    std::vector<frequency> data_frequency;
-    data_frequency.push_back(frequency(1, 10));
-    data_frequency.push_back(frequency(2, 40));
-    data_frequency.push_back(frequency(3, 50));
-    Histogram histogram(3,0.5,3.5);
-    for(size_t i=0; i < 1000; ++i){
-        histogram(RandomGenerator(data_frequency));
-    }
-    EXPECT_NEAR(histogram[0] / 1000.0, 0.1, 0.02);
-    EXPECT_NEAR(histogram[1] / 1000.0, 0.4, 0.02);
-    EXPECT_NEAR(histogram[2] / 1000.0, 0.5, 0.02);
-}
-
 TEST(statistics, Normal_dist){
     std::random_device rd;
     std::mt19937 gen(rd());
