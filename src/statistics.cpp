@@ -46,3 +46,5 @@ namespace pstatistics{
     Skewness::operator double() const{
         return g1;
     }
+
+} //namespace

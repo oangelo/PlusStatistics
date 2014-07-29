@@ -1,10 +1,8 @@
 #include <iostream>
 #include <algorithm> 
+#include <string> 
 
-#include <cstring>
-#include <cstdlib> 
-#include <cmath> 
-
+#include "boost/program_options.hpp" 
 #include "utils/utils.h"
 #include "histogram.h"
 #include "statistics.h"
@@ -12,105 +10,83 @@
 
 using namespace pstatistics;
 
-void help(std::string name) {
-    std::cout << "usage:" << std::endl;
-    std::cout << name << " [options]... [file name]" << std::endl;
-    std::cout << std::endl;
-    std::cout << "functions:" << std::endl;
-    std::cout << "  --hist                 print a histogram" << std::endl;
-    std::cout << "  --hist_interval <min> <max> print a histogram at the interval" << std::endl;
-    std::cout << "  --mean                 print the mean" << std::endl;
-    std::cout << "  --std                  print the standard deviation" << std::endl;
-    std::cout << "  --skew                 print the skewness" << std::endl;
-    std::cout << std::endl;
-    std::cout << "options:" << std::endl;
-    std::cout << "  -                             reads data from stdin" << std::endl;
-    std::cout << "  -bins_amount <integer>        set the amount of bins on the histogram" << std::endl;
-}
-
-int main(int argc, char** argv) {
-
-    unsigned bins_amount = 0;
+int main(int argc, char** argv) 
+{ 
+    unsigned bins_amount(0);
     std::vector<double> data;
 
-    if(argc > 1) { 
-        if( strcmp(argv[1], "-h") == 0) {
-            help(std::string(argv[0]));
-            return 0;
-        }
-    }else{
-        help(argv[0]);
-        return 0;
-    }
+    try 
+    { 
+        /** Define and parse the program options */ 
+        namespace po = boost::program_options; 
+        po::options_description desc("Options"); 
+        desc.add_options() 
+            ("help, h", "Print help messages") 
+            ("histogram", "Print Histogram") 
+            ("mean", "Print the mean of the data") 
+            ("std", "Print the standard deviation of the data")
+            ("skew", "Print skewness of the data")
+            ("bins", po::value<unsigned>(&bins_amount), "Set the number of bins of the histogram");
 
+        po::variables_map vm; 
+        try 
+        { 
+            po::store(po::parse_command_line(argc, argv, desc),  vm); // can throw 
+            if ( vm.count("help")  ) 
+            { 
+                std::cout << "Basic Command Line Parameter" << std::endl << desc << std::endl; 
+                return EXIT_SUCCESS; 
+            } 
 
-    for (int i = 1; i < argc; ++i)
-    {
-        if( strcmp(argv[i], "-bins_amount") == 0) {
-            bins_amount = atoi(argv[i + 1]);
-            std::cerr << "# bins_amount: " << bins_amount << std::endl;
-        }
-        if( strcmp(argv[i], "-") == 0) {
-            auto stdin_data(ReadStdin<double>());
-            for(auto i: stdin_data)
-                data.push_back(i[0]);
-            std::cerr << "# lines read: " << data.size() << std::endl;
-        }
-
-    }
-
-    if(data.size() == 0) {
-        auto stdin_data(ReadFile<double>(std::string(argv[argc - 1])));
+            po::notify(vm); // throws on error, so do after help in case 
+            // there are any problems 
+        } 
+        catch(po::error& e) 
+        { 
+            std::cerr << "ERROR: " << e.what() << std::endl << std::endl; 
+            std::cerr << desc << std::endl; 
+            return EXIT_FAILURE; 
+        } 
+        auto stdin_data(ReadStdin<double>());
         for(auto i: stdin_data)
             data.push_back(i[0]);
-    }
 
-    for (int i = 1; i < argc; ++i)
-    {
-        if( strcmp(argv[i], "--hist") == 0) {
-            if(data.size() > 0){
-                if(bins_amount > 0){
-                    Histogram histogram(bins_amount, data);
-                    std::cout << histogram << std::endl;
-                }else{
-                    Histogram histogram(sqrt(data.size()), data);
-                    std::cout << histogram << std::endl;
-                }
+        if (vm.count("histogram")){
+            std::cerr << "# lines read: " << data.size() << std::endl;
+            if(bins_amount > 0){
+                Histogram histogram(bins_amount, 
+                        *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
+                for(auto value: data)
+                    histogram(value);
+                std::cout << histogram << std::endl;
+            }else{
+                Histogram histogram(sqrt(data.size()),
+                        *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
+                for(auto value: data)
+                    histogram(value);
+                std::cout << histogram << std::endl;
             }
         }
-
-        if( strcmp(argv[i], "--hist_interval") == 0) {
-            if(data.size() > 0){
-                double min = atoi(argv[i + 1]);
-                double max = atoi(argv[i + 2]);
-                std::cerr << "# hist_interval: " << max << " " << min << std::endl;
-                if(bins_amount > 0){
-                    Histogram histogram(bins_amount, min, max);
-                    for(auto value: data)
-                        histogram(value);
-                    std::cout << histogram << std::endl;
-                }else{
-                    Histogram histogram(sqrt(data.size()), min, max);
-                    for(auto value: data)
-                        histogram(value);
-                    std::cout << histogram << std::endl;
-                }
-            }
-        }
-
-        if( strcmp(argv[i], "--mean") == 0) {
+        if(vm.count("mean")) {
             Mean mean(for_each(data.begin(), data.end(), Mean()));
             std::cout << mean << std::endl;
-        }
-        if( strcmp(argv[i], "--std") == 0) {
+        } else if(vm.count("std")) {
             StandardDeviation std(for_each(data.begin(), data.end(), StandardDeviation()));
             std::cout << std << std::endl;
-        }
-        if( strcmp(argv[i], "--skew") == 0) {
+        } else if(vm.count("skew")) {
             Skewness skewness(for_each(data.begin(), data.end(), Skewness()));
             std::cout << skewness << std::endl;
         }
 
-    }
-    return 0;
+
+        // application code here // 
+    } 
+    catch(std::exception& e) 
+    { 
+        std::cerr << "Unhandled Exception reached the top of main: " 
+            << e.what() << ", application will now exit" << std::endl; 
+        return EXIT_FAILURE; 
+
+    } 
+    return EXIT_SUCCESS; 
 }
