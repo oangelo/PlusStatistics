@@ -3,8 +3,8 @@
 CC := g++ 
 SRCDIR := src
 BUILDDIR := build
-CFLAGS := -g -Wall -std=c++0x  -Weffc++ -Wextra -pedantic
-LDFLAGS=  -lm 
+CFLAGS := -g -Wall -std=c++0x  -Weffc++ -Wextra -pedantic 
+LDFLAGS=  -lm -lboost_program_options
 TARGET := pstatistics 
 LIB := libpstatistics.so 
 SRCEXT := cpp
@@ -20,7 +20,7 @@ HEADERS := $(shell find $(SRCDIR) -type f -name *.h)
 INCLUDE = $(patsubst $(SRCDIR)/%,$(INCDIR)/%,$(HEADERS))
 
 .PHONY: all 
-all:bin lib
+all: lib bin
 
 .PHONY: install 
 vpath %.h $(DIRS)
@@ -43,7 +43,7 @@ $(BUILDDIR)/%.o: %.$(SRCEXT)
 .PHONY: bin 
 bin:$(TARGET)
 $(TARGET):$(LIB)
-	$(CC) -L. -lpstatistics -o $(TARGET)
+	$(CC) $< -o $(TARGET) $(LDFLAGS) 
 
 .PHONY: clean
 clean:
