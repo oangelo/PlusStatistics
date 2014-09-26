@@ -80,7 +80,7 @@ int main(int argc, char** argv)
       data.push_back(i[column]);
     }
 
-    if (vm.count("histogram")){
+    if (vm.count("hist")){
       std::cerr << "# lines read: " << data.size() << std::endl;
       if(bins_amount > 0){
         Histogram histogram(bins_amount, 
