@@ -13,6 +13,18 @@ std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
     return os;
 } 
 
+std::string Normilize(const Histogram& histogram) {
+    std::stringstream ss;
+    ss << "#midle_bin_value \t bin_amount \t bin_length\n";
+    for (size_t i = 0; i < histogram.range.size(); ++i)
+    {
+        double bin_length =  histogram.range[i].second - histogram.range[i].first; 
+        double midle_value = histogram.range[i].first + (bin_length / 2);  
+        ss << midle_value << "\t" << static_cast<double>(histogram.amount[i]) / histogram.SamplesAmount() << "\t" << bin_length << std::endl;
+    }
+    return ss.str();
+}
+
 //adding a small value to max, so the max value from values can be present at
 //the histogram
 Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
@@ -54,7 +66,7 @@ double Histogram::Min() const {
     return min;
 }
 
-unsigned Histogram::SumBins() {
+unsigned Histogram::SamplesAmount() const {
     return std::accumulate(amount.begin(), amount.end(), 0);
 }
 

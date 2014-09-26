@@ -24,13 +24,14 @@ public:
     //increment a bin acording with the value
     void operator()(double value);
 
-    unsigned SumBins();
+    unsigned SamplesAmount() const;
 
     unsigned BinsAmount() const;
     double Max() const;
     double Min() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
+    friend std::string Normilize(const Histogram& histogram);
     
 protected:
     std::vector<double> amount;
@@ -41,6 +42,7 @@ protected:
 };
 
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
+std::string Normilize(const Histogram& histogram);
 
 } //namespace
 

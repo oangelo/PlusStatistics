@@ -33,6 +33,7 @@ int main(int argc, char** argv)
     po::options_description opt("Options"); 
     opt.add_options() 
       ("hist", "Print Histogram") 
+      ("normilize,n", "Normilize the histogram") 
       ("mean", "Print the mean of the data") 
       ("std", "Print the standard deviation of the data")
       ("skew", "Print skewness of the data")
@@ -87,13 +88,19 @@ int main(int argc, char** argv)
             *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
         for(auto value: data)
           histogram(value);
-        std::cout << histogram << std::endl;
+        if(vm.count("normilize"))
+          std::cout << Normilize(histogram) << std::endl;
+        else
+          std::cout << histogram << std::endl;
       }else{
         Histogram histogram(sqrt(data.size()),
             *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
         for(auto value: data)
           histogram(value);
-        std::cout << histogram << std::endl;
+        if(vm.count("normilize"))
+          std::cout << Normilize(histogram) << std::endl;
+        else
+          std::cout << histogram << std::endl;
       }
     }
     if(vm.count("mean")) {

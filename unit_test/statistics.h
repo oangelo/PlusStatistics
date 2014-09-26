@@ -64,7 +64,7 @@ TEST(histogram, sum){
     values.push_back(3);
     values.push_back(4);
     Histogram histogram(4, values);
-    EXPECT_EQ(histogram.SumBins(), 4);
+    EXPECT_EQ(histogram.SamplesAmount(), 4);
 }
 
 
