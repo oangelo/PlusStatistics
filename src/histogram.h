@@ -26,9 +26,9 @@ public:
 
     unsigned SumBins();
 
-    unsigned get_bins_amount() const;
-    double get_max() const;
-    double get_min() const;
+    unsigned BinsAmount() const;
+    double Max() const;
+    double Min() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
     

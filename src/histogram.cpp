@@ -42,15 +42,15 @@ void Histogram::StartHistogram(){
     }
 }
 
-unsigned Histogram::get_bins_amount() const {
+unsigned Histogram::BinsAmount() const {
     return range.size();
 }
 
-double Histogram::get_max() const {
+double Histogram::Max() const {
     return max;
 }
 
-double Histogram::get_min() const {
+double Histogram::Min() const {
     return min;
 }
 

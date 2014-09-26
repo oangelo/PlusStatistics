@@ -8,9 +8,9 @@ TEST(histogram, constructor_values){
     values.push_back(1);
     values.push_back(4);
     Histogram histogram(5, values);
-    EXPECT_NEAR(histogram.get_max(), 4, 0.000001);
-    EXPECT_EQ(histogram.get_min(), 1);
-    EXPECT_EQ(histogram.get_bins_amount(), 5);
+    EXPECT_NEAR(histogram.Max(), 4, 0.000001);
+    EXPECT_EQ(histogram.Min(), 1);
+    EXPECT_EQ(histogram.BinsAmount(), 5);
     EXPECT_EQ(histogram[0], 1);
     EXPECT_EQ(histogram[4], 1);
 }
@@ -18,9 +18,9 @@ TEST(histogram, constructor_values){
 TEST(histogram, constructor_single){
     double min = 0.5, max = 4.6;
     Histogram histogram(5, min, max);
-    EXPECT_EQ(histogram.get_max(), 4.6);
-    EXPECT_EQ(histogram.get_min(), 0.5);
-    EXPECT_EQ(histogram.get_bins_amount(), 5);
+    EXPECT_EQ(histogram.Max(), 4.6);
+    EXPECT_EQ(histogram.Min(), 0.5);
+    EXPECT_EQ(histogram.BinsAmount(), 5);
 }
 
 TEST(histogram, values){
@@ -34,7 +34,7 @@ TEST(histogram, values){
     {
         EXPECT_EQ(histogram[i], 1);
     }
-    EXPECT_EQ(histogram.get_bins_amount(), 4);
+    EXPECT_EQ(histogram.BinsAmount(), 4);
 }
 
 TEST(histogram, operator_insert){
