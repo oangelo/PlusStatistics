@@ -29,7 +29,7 @@ std::string Normilize(const Histogram& histogram) {
 //the histogram
 Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
 :amount(), range(), max(*std::max_element(values.begin(), values.end()) + 0.00000001), 
-    min(*std::min_element(values.begin(), values.end())), bins_amount(bins_amount)
+    min(*std::min_element(values.begin(), values.end())), bins_amount(bins_amount), samples_amount(0)
 {
     StartHistogram();
     for(auto& item: values){
@@ -40,7 +40,7 @@ Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
 
 
 Histogram::Histogram(unsigned bins_amount, double min, double max)
-:amount(), range(), max(max), min(min), bins_amount(bins_amount)
+:amount(), range(), max(max), min(min), bins_amount(bins_amount), samples_amount(0)
 {
     StartHistogram();
 }
@@ -78,6 +78,7 @@ void Histogram::operator()(double value) {
     for (size_t i = 0; i < range.size(); ++i) {
         if( range[i].first <= value && range[i].second > value) {
             ++amount[i];
+            ++samples_amount;
             return;
         }
     }

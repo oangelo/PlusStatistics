@@ -25,6 +25,7 @@ public:
     void operator()(double value);
 
     unsigned SamplesAmount() const;
+    std::pair<double, double> Bin() const;
 
     unsigned BinsAmount() const;
     double Max() const;
@@ -37,7 +38,7 @@ protected:
     std::vector<double> amount;
     std::vector<std::pair<double, double>> range;
     double max, min;
-    unsigned bins_amount;
+    unsigned bins_amount, samples_amount;
     void StartHistogram();
 };
 
