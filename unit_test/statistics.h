@@ -11,8 +11,8 @@ TEST(histogram, constructor_values){
     EXPECT_NEAR(histogram.Max(), 4, 0.000001);
     EXPECT_EQ(histogram.Min(), 1);
     EXPECT_EQ(histogram.BinsAmount(), 5);
-    EXPECT_EQ(histogram[0], 1);
-    EXPECT_EQ(histogram[4], 1);
+    EXPECT_EQ(histogram[0].second, 1);
+    EXPECT_EQ(histogram[4].second, 1);
 }
 
 TEST(histogram, constructor_single){
@@ -32,7 +32,7 @@ TEST(histogram, values){
     Histogram histogram(4, values);
     for (size_t i = 0; i < values.size(); ++i)
     {
-        EXPECT_EQ(histogram[i], 1);
+        EXPECT_EQ(histogram[i].second, 1);
     }
     EXPECT_EQ(histogram.BinsAmount(), 4);
 }
@@ -47,7 +47,7 @@ TEST(histogram, operator_insert){
 
     for (size_t i = 0; i < 4; ++i)
     {
-        EXPECT_EQ(histogram[i], 1);
+        EXPECT_EQ(histogram[i].second, 1);
     }
 }
 
