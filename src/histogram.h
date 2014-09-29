@@ -15,12 +15,14 @@ public:
     Histogram(unsigned bins_amount, double min, double max);
     virtual ~Histogram(){};
 
+    typedef std::pair<double, double> bin;  
+
     //return the occupation of a bin
     std::pair<double, unsigned> operator[](unsigned index) const;
     //increment a bin acording with the value
     void operator()(double value);
 
-    std::pair<double, double> Bin(unsigned index) const;
+    bin BinRange(unsigned index) const;
     unsigned SamplesAmount() const;
     unsigned BinsAmount() const;
     double Max() const;
@@ -28,7 +30,7 @@ public:
 
 protected:
     std::vector<double> amount;
-    std::vector<std::pair<double, double>> range;
+    std::vector<bin> range;
     double max, min;
     unsigned bins_amount, samples_amount;
     void StartHistogram();

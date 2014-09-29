@@ -6,7 +6,7 @@ namespace pstatistics{
     os << "#midle_bin_value \t bin_amount \t bin_length" <<  std::endl;
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
-      double bin_length =  histogram.Bin(i).second - histogram.Bin(i).first; 
+      double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
       os << histogram[i].first << "\t" << histogram[i].second << "\t" << bin_length << std::endl;
     }
     return os;
@@ -17,7 +17,7 @@ namespace pstatistics{
     ss << "#midle_bin_value \t bin_amount \t bin_length\n";
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
-      double bin_length =  histogram.Bin(i).second - histogram.Bin(i).first; 
+      double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
       ss << histogram[i].first << "\t" << static_cast<double>(histogram[i].second) / histogram.SamplesAmount() 
       << "\t" << bin_length << std::endl;
     }
@@ -83,7 +83,7 @@ namespace pstatistics{
     }
   }
 
-  std::pair<double, double> Histogram::Bin(unsigned index) const{
+  Histogram::bin Histogram::BinRange(unsigned index) const{
     return range[index]; 
   }
 
