@@ -3,7 +3,7 @@
 namespace pstatistics{
 
   std::ostream& operator<<(std::ostream& os, const Histogram& histogram) {
-    os << "#midle_bin_value \t bin_amount \t bin_length" <<  std::endl;
+    os << "#midle_bin_value\tbin_amount/bin_length\tbin_length" <<  std::endl;
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
       double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
@@ -14,7 +14,7 @@ namespace pstatistics{
 
   std::string Normilize(const Histogram& histogram) {
     std::stringstream ss;
-    ss << "#midle_bin_value \t bin_amount \t bin_length\n";
+    ss << "#midle_bin_value\tbin_probability\tbin_length\n";
 
     double area(0);
     for (size_t i = 0; i < histogram.BinsAmount(); ++i) {
