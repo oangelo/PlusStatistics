@@ -7,7 +7,7 @@ namespace pstatistics{
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
       double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
-      os << histogram[i].first << "\t" << histogram[i].second << "\t" << bin_length << std::endl;
+      os << histogram[i].first << "\t" << histogram[i].second / bin_length << "\t" << bin_length << std::endl;
     }
     return os;
   } 
@@ -15,10 +15,17 @@ namespace pstatistics{
   std::string Normilize(const Histogram& histogram) {
     std::stringstream ss;
     ss << "#midle_bin_value \t bin_amount \t bin_length\n";
+
+    double area(0);
+    for (size_t i = 0; i < histogram.BinsAmount(); ++i) {
+      Histogram::bin range(histogram.BinRange(i));
+      area += histogram[i].second;
+    }
+
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
       double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
-      ss << histogram[i].first << "\t" << static_cast<double>(histogram[i].second) / histogram.SamplesAmount() 
+      ss << histogram[i].first << "\t" << (histogram[i].second / bin_length) / area 
       << "\t" << bin_length << std::endl;
     }
     return ss.str();
@@ -27,10 +34,10 @@ namespace pstatistics{
   //adding a small value to max, so the max value from values can be present at
   //the histogram
   Histogram::Histogram(unsigned bins_amount, const std::vector<double> & values)
-    :amount(), range(), max(*std::max_element(values.begin(), values.end()) + 0.00000001), 
-    min(*std::min_element(values.begin(), values.end())), bins_amount(bins_amount), samples_amount(0)
+    :amount(), center(), range(), max(*std::max_element(values.begin(), values.end()) + 0.00000001), 
+    min(*std::min_element(values.begin(), values.end())), samples_amount(0)
   {
-    StartHistogram();
+    StartHistogram(bins_amount);
     for(auto& item: values){
       operator()(item);
     }
@@ -38,15 +45,21 @@ namespace pstatistics{
   }
 
   Histogram::Histogram(unsigned bins_amount, double min, double max)
-    :amount(), range(), max(max), min(min), bins_amount(bins_amount), samples_amount(0)
+    :amount(), center(), range(), max(max), min(min), samples_amount(0)
   {
-    StartHistogram();
+    StartHistogram(bins_amount);
   }
 
-  void Histogram::StartHistogram(){
+  Histogram::Histogram(double min, double max)
+    :amount(), center(), range(), max(max), min(min), samples_amount(0)  {
+  }
+
+
+  void Histogram::StartHistogram(unsigned bins_amount){
     double length = (max - min) / bins_amount;
     for(unsigned i = 0; i < bins_amount; i++) {
       std::pair<double, double> bin(min + i * length, min + (i + 1) * length);
+      center.push_back(bin.first + ((bin.second - bin.first) / 2.0));
       range.push_back(bin); 
       amount.push_back(0); 
     }
@@ -69,13 +82,12 @@ namespace pstatistics{
   }
 
   std::pair<double, unsigned> Histogram::operator[](unsigned index) const {
-    double center(range[index].first + (range[index].second - range[index].second) / 2.0);
-    return std::make_pair(center, amount[index]);
+    return std::make_pair(center[index], amount[index]);
   }
 
   void Histogram::operator()(double value) {
     for (size_t i = 0; i < range.size(); ++i) {
-      if( range[i].first <= value && range[i].second > value) {
+      if( range[i].first <= value and range[i].second > value) {
         ++amount[i];
         ++samples_amount;
         return;

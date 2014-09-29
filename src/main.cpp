@@ -5,6 +5,7 @@
 #include "boost/program_options.hpp" 
 #include "utils.h"
 #include "histogram.h"
+#include "logbinning.h"
 #include "statistics.h"
 
 
@@ -13,6 +14,7 @@ using namespace pstatistics;
 int main(int argc, char** argv) 
 { 
   unsigned column, bins_amount(0);
+  double common_ratio, min;
   std::string file_name;
   std::vector<std::vector<double>> file_data;
   std::vector<double> data;
@@ -32,12 +34,16 @@ int main(int argc, char** argv)
 
     po::options_description opt("Options"); 
     opt.add_options() 
-      ("hist", "Print Histogram") 
+      ("hist", "Print histogram") 
+      ("logbinning", "Print log binning histogram") 
       ("normilize,n", "Normilize the histogram") 
       ("mean", "Print the mean of the data") 
       ("std", "Print the standard deviation of the data")
       ("skew", "Print skewness of the data")
-      ("bins", po::value<unsigned>(&bins_amount), "Set the number of bins of the histogram");
+      ("bins", po::value<unsigned>(&bins_amount), "Set the number of bins of the histogram")
+      ("min", po::value<double>(&min), "Set the value to start the histogram.")
+      ("ratio", po::value<double>(&common_ratio)->default_value(1.34),
+       "Set the size of the initial bin for logbinning.");
 
     po::options_description all_options;
     all_options.add(basic).add(opt);
@@ -82,10 +88,10 @@ int main(int argc, char** argv)
     }
 
     if (vm.count("hist")){
-      std::cerr << "# lines read: " << data.size() << std::endl;
+      if (!vm.count("min"))
+        min = *std::min_element(data.begin(), data.end());
       if(bins_amount > 0){
-        Histogram histogram(bins_amount, 
-            *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
+        Histogram histogram(bins_amount, min, *std::max_element(data.begin(), data.end()));
         for(auto value: data)
           histogram(value);
         if(vm.count("normilize"))
@@ -93,8 +99,7 @@ int main(int argc, char** argv)
         else
           std::cout << histogram << std::endl;
       }else{
-        Histogram histogram(sqrt(data.size()),
-            *std::min_element(data.begin(), data.end()), *std::max_element(data.begin(), data.end()));
+        Histogram histogram(sqrt(data.size()), min, *std::max_element(data.begin(), data.end()));
         for(auto value: data)
           histogram(value);
         if(vm.count("normilize"))
@@ -103,6 +108,20 @@ int main(int argc, char** argv)
           std::cout << histogram << std::endl;
       }
     }
+
+    if (vm.count("logbinning")){
+      if (!vm.count("min"))
+        min = *std::min_element(data.begin(), data.end());
+        LogBinning histogram(min, *std::max_element(data.begin(), data.end()), common_ratio);
+        for(auto value: data)
+          histogram(value);
+        if(vm.count("normilize"))
+          std::cout << Normilize(histogram) << std::endl;
+        else
+          std::cout << histogram << std::endl;
+    }
+
+
     if(vm.count("mean")) {
       Mean mean(for_each(data.begin(), data.end(), Mean()));
       std::cout << mean << std::endl;

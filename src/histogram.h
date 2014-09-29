@@ -29,11 +29,14 @@ public:
     double Min() const;
 
 protected:
+    Histogram(double min, double max);
+
     std::vector<double> amount;
+    std::vector<double> center;
     std::vector<bin> range;
     double max, min;
-    unsigned bins_amount, samples_amount;
-    void StartHistogram();
+    unsigned samples_amount;
+    void StartHistogram(unsigned bins_amount);
 };
 
 std::ostream& operator<<(std::ostream& os, const Histogram& histogram); 
