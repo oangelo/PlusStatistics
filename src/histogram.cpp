@@ -7,7 +7,11 @@ namespace pstatistics{
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
       double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
-      os << histogram[i].first << "\t" << histogram[i].second / bin_length << "\t" << bin_length << std::endl;
+      if (histogram[i].second > 0){
+        os << histogram[i].first << "\t" << histogram[i].second / bin_length << "\t" << bin_length << std::endl;
+      }else{
+        os << std::endl;
+      }
     }
     return os;
   } 
@@ -25,8 +29,11 @@ namespace pstatistics{
     for (size_t i = 0; i < histogram.BinsAmount(); ++i)
     {
       double bin_length =  histogram.BinRange(i).second - histogram.BinRange(i).first; 
-      ss << histogram[i].first << "\t" << (histogram[i].second / bin_length) / area 
-      << "\t" << bin_length << std::endl;
+      if (histogram[i].second > 0){
+        ss << histogram[i].first << "\t" << (histogram[i].second / bin_length) / area << "\t" << bin_length << std::endl;
+      }else{
+        ss << std::endl;
+      }
     }
     return ss.str();
   }
