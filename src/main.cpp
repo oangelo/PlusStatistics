@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm> 
 #include <string> 
+#include <cmath> 
 
 #include "boost/program_options.hpp" 
 #include "utils.h"
@@ -37,6 +38,7 @@ int main(int argc, char** argv)
       ("hist", "Print histogram") 
       ("logbinning", "Print log binning histogram") 
       ("normilize,n", "Normilize the histogram") 
+      ("log", "Takes the log10 of the data")
       ("mean", "Print the mean of the data") 
       ("std", "Print the standard deviation of the data")
       ("skew", "Print skewness of the data")
@@ -83,8 +85,14 @@ int main(int argc, char** argv)
       throw std::invalid_argument("No input specified!");
     }
 
-    for(auto& i: file_data){
-      data.push_back(i[column]);
+    if (vm.count("log")){
+      for(auto& i: file_data){
+        data.push_back(log10(i[column]));
+      }
+    }else{
+      for(auto& i: file_data){
+        data.push_back(i[column]);
+      }
     }
 
     if (vm.count("hist")){
